@@ -1,0 +1,48 @@
+--- ./sources/proxy.move
++++ ./sources/proxy.move
+@@ -21 +21 @@
+-    friend asset_tokenization::unlock;
++    /* friend asset_tokenization::unlock; */
+@@ -26 +26 @@
+-    struct PROXY has drop {}
++    public struct PROXY has drop {}
+@@ -30 +30 @@
+-    struct Registry has key {
++    public struct Registry has key {
+@@ -37 +37 @@
+-    struct ProtectedTP<phantom T> has key, store {
++    public struct ProtectedTP<phantom T> has key, store {
+@@ -91 +91 @@
+-    public(friend) fun transfer_policy<T>(protected_tp: &ProtectedTP<T>): &TransferPolicy<T> {
++    public(package) fun transfer_policy<T>(protected_tp: &ProtectedTP<T>): &TransferPolicy<T> {
+--- ./sources/tokenized_asset.move
++++ ./sources/tokenized_asset.move
+@@ -40 +40 @@
+-    struct AssetCap<phantom T> has key, store {
++    public struct AssetCap<phantom T> has key, store {
+@@ -54 +54 @@
+-    struct AssetMetadata<phantom T> has key, store {
++    public struct AssetMetadata<phantom T> has key, store {
+@@ -70 +70 @@
+-    struct TokenizedAsset<phantom T> has key, store {
++    public struct TokenizedAsset<phantom T> has key, store {
+@@ -82 +82 @@
+-    struct PlatformCap has key, store { id: UID }
++    public struct PlatformCap has key, store { id: UID }
+@@ -85 +85 @@
+-    struct AssetCreated has copy, drop {
++    public struct AssetCreated has copy, drop {
+@@ -239 +239 @@
+-        let vec_map = vec_map::empty();
++        let mut vec_map = vec_map::empty();
+@@ -241 +241 @@
+-        let i = 0;
++        let mut i = 0;
+--- ./sources/unlock.move
++++ ./sources/unlock.move
+@@ -25 +25 @@
+-    struct JoinPromise {
++    public struct JoinPromise {
+@@ -35 +35 @@
+-    struct BurnPromise {
++    public struct BurnPromise {
