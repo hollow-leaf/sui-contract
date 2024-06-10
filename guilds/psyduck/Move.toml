@@ -1,12 +1,12 @@
 [package]
-name = "guild"
-edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
+name = "psyduck"
+edition = "2024.beta"
 # license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
-asset_tokenization = { local = "../asset_tokenization/" }
+asset_tokenization = { local = "../../asset_tokenization/" }
 
 # For remote import, use the `{ git = "...", subdir = "...", rev = "..." }`.
 # Revision can be a branch, a tag, and a commit hash.
@@ -20,7 +20,7 @@ asset_tokenization = { local = "../asset_tokenization/" }
 # Override = { local = "../conflicting/version", override = true }
 
 [addresses]
-guild = "0x0"
+psyduck = "0x0"
 
 # Named addresses will be accessible in Move as `@name`. They're also exported:
 # for example, `std = "0x1"` is exported by the Standard Library.

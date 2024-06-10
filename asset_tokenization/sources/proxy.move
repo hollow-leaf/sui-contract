@@ -55,6 +55,7 @@ module asset_tokenization::proxy {
     /// where T matches with the Publisher object.
     public fun setup_tp<T: drop>(
         registry: &Registry,
+        // input Publisher Object from Geneis pacakge
         publisher: &Publisher,
         ctx: &mut TxContext
     ): (TransferPolicy<TokenizedAsset<T>>, TransferPolicyCap<TokenizedAsset<T>>) {
