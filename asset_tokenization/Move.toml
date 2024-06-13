@@ -1,6 +1,8 @@
 [package]
 name = "asset_tokenization"
 edition = "2024.beta"
+version = 1
+published-at="0xa8fe0d9f91e4f63df6bd4816278fb02589a763ec9410ecdde0d1128538825a1d"
 # license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
 
@@ -19,7 +21,7 @@ Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-fram
 # Override = { local = "../conflicting/version", override = true }
 
 [addresses]
-asset_tokenization = "0x0"
+asset_tokenization = "0xa8fe0d9f91e4f63df6bd4816278fb02589a763ec9410ecdde0d1128538825a1d"
 
 # Named addresses will be accessible in Move as `@name`. They're also exported:
 # for example, `std = "0x1"` is exported by the Standard Library.
