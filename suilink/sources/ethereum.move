@@ -5,13 +5,13 @@ module suilink::ethereum {
     use std::vector;
     use sui::ecdsa_k1;
     use sui::hash;
-    use 0xf857fa9df5811e6df2a0240a1029d365db24b5026896776ddd1c3c70803bccd3::suilink;
+    use suilink::suilink;
     use sui::clock;
     use sui::tx_context;
-    use 0xf857fa9df5811e6df2a0240a1029d365db24b5026896776ddd1c3c70803bccd3::registry_v2;
+    use suilink::registry_v2;
     use std::string;
     use sui::address;
-    use 0xf857fa9df5811e6df2a0240a1029d365db24b5026896776ddd1c3c70803bccd3::utils;
+    use suilink::utils;
 
     // ----- public structs -----
 
@@ -20,7 +20,10 @@ module suilink::ethereum {
     }
     // ----- Internal Functions -----
 
-    fun ecrecover_eth_address(signature: vector<u8>, message: vector<u8>): vector<u8> {
+    fun ecrecover_eth_address(
+        mut signature: vector<u8>, 
+        message: vector<u8>
+    ): vector<u8> {
         let recovery_id = vector::borrow_mut(&mut signature, 64);
         if (*recovery_id == 27) {
             *recovery_id = 0;
@@ -31,16 +34,16 @@ module suilink::ethereum {
         };
         let uncompressed_pubkey = ecdsa_k1::secp256k1_ecrecover(&signature, &message, 0);
         let decompressed_pubkey = ecdsa_k1::decompress_pubkey(&uncompressed_pubkey);
-        let prefix = b"";
-        let data_with_prefix = prefix.to_vec();
-        let i = 1;
+        let mut data_with_prefix = b"";
+        // let data_with_prefix = prefix.to_vec();
+        let mut i = 1;
         while (i < 65) {
             vector::push_back(&mut data_with_prefix, *vector::borrow(&decompressed_pubkey, i));
             i = i + 1;
         };
         let hashed_data = hash::keccak256(&data_with_prefix);
-        let eth_address = b"".to_vec();
-        let j = 12;
+        let mut eth_address = b"";
+        let mut j = 12;
         while (j < 32) {
             vector::push_back(&mut eth_address, *vector::borrow(&hashed_data, j));
             j = j + 1;
@@ -71,7 +74,7 @@ module suilink::ethereum {
         clock: &clock::Clock,
         ctx: &mut tx_context::TxContext,
     ) {
-        let message_prefix = string::utf8(b"19457468657265756d205369676e6564204d6573736167653a0a31393757656c636f6d6520746f205375694c696e6b21205369676e2074686973206d65737361676520746f206c696e6b20796f757220457468657265756d2077616c6c657420746f205355492061646472657373203078");
+        let mut message_prefix = string::utf8(b"19457468657265756d205369676e6564204d6573736167653a0a31393757656c636f6d6520746f205375694c696e6b21205369676e2074686973206d65737361676520746f206c696e6b20796f757220457468657265756d2077616c6c657420746f205355492061646472657373203078");
         let sui_address_str = address::to_string(tx_context::sender(ctx));
         string::append_utf8(&mut message_prefix, *string::bytes(&sui_address_str));
         string::append_utf8(&mut message_prefix, b". No blockchain transaction or gas cost required.");

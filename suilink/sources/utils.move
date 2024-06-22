@@ -9,9 +9,9 @@ module suilink::utils {
     // ----- Public Functions -----
 
     public fun bytes_to_hex(input: vector<u8>): string::String {
-        let hex_prefix = b"0123456789abcdef";
-        let hex_output = b"0x";
-        let index = 0;
+        let mut hex_prefix = b"0123456789abcdef";
+        let mut hex_output = b"0x";
+        let mut index = 0;
         while (index < vector::length(&input)) {
             let byte = *vector::borrow(&input, index);
             vector::push_back(&mut hex_output, *vector::borrow(&hex_prefix, ((byte >> 4) as u64)));
@@ -23,12 +23,12 @@ module suilink::utils {
 
     public fun hex_to_base58(input: vector<u8>): string::String {
         let base58_alphabet = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-        let temp_input = input;
-        let base58_vector = b"";
+        let mut temp_input = input;
+        let mut base58_vector = b"";
         while (!vector::is_empty<u8>(&temp_input)) {
-            let carry = 0u64;
-            let temp_vector = b"";
-            let index = 0;
+            let mut carry = 0u64;
+            let mut temp_vector = b"";
+            let mut index = 0;
             while (index < vector::length<u8>(&temp_input)) {
                 let value = (*vector::borrow<u8>(&temp_input, index) as u64) + carry * 256;
                 let div = value / 58;
@@ -41,8 +41,8 @@ module suilink::utils {
             vector::push_back<u8>(&mut base58_vector, *vector::borrow<u8>(&base58_alphabet, carry));
             temp_input = temp_vector;
         };
-        let reversed_base58 = b"";
-        let length = vector::length<u8>(&base58_vector);
+        let mut reversed_base58 = b"";
+        let mut length = vector::length<u8>(&base58_vector);
         while (length > 0) {
             let last_index = length - 1;
             length = last_index;
@@ -54,14 +54,14 @@ module suilink::utils {
     public fun hex_to_bytes(hex_string: string::String): vector<u8> {
         let hex_prefix = b"0123456789abcdef";
         let hex_bytes = string::bytes(&hex_string);
-        let result_bytes = vector<u8>{};
-        let i = 0;
+        let mut result_bytes = vector[];
+        let mut i = 0;
 
-        while (i < vector::length<u8>(&hex_bytes)) {
-            let high_nibble = *vector::borrow<u8>(&hex_bytes, i);
-            let low_nibble = *vector::borrow<u8>(&hex_bytes, i + 1);
-            let (high_nibble_index, _) = vector::index_of<u8>(&hex_prefix, &high_nibble);
-            let (low_nibble_index, _) = vector::index_of<u8>(&hex_prefix, &low_nibble);
+        while (i < vector::length<u8>(hex_bytes)) {
+            let high_nibble = *vector::borrow<u8>(hex_bytes, i);
+            let low_nibble = *vector::borrow<u8>(hex_bytes, i + 1);
+            let (_, high_nibble_index) = vector::index_of<u8>(&hex_prefix, &high_nibble);
+            let (_, low_nibble_index) = vector::index_of<u8>(&hex_prefix, &low_nibble);
             assert!(high_nibble_index >= 0 && low_nibble_index >= 0, 0);
             vector::push_back<u8>(
                 &mut result_bytes,
@@ -78,7 +78,7 @@ module suilink::utils {
         address: address,
         network_address: string::String
     ): vector<u8> {
-        let empty_vec = vector::empty<vector<u8>>();
+        let mut empty_vec = vector::empty<vector<u8>>();
         let vec_ref = &mut empty_vec;
         vector::push_back(vec_ref, bcs::to_bytes(&entry_type));
         vector::push_back(vec_ref, hash_sui_address_and_network_address(address, network_address));
@@ -91,7 +91,7 @@ module suilink::utils {
         sui_address: address,
         network_address: string::String
     ): vector<u8> {
-        let empty_vec = vector::empty<vector<u8>>();
+        let mut empty_vec = vector::empty<vector<u8>>();
         let vec_ref = &mut empty_vec;
         vector::push_back(vec_ref, bcs::to_bytes(&sui_address));
         vector::push_back(vec_ref, *string::bytes(&network_address));
@@ -104,7 +104,7 @@ module suilink::utils {
         version: u32,
         data: vector<u8>
     ): vector<u8> {
-        let entries = vector::empty<vector<u8>>();
+        let mut entries = vector::empty<vector<u8>>();
         let entries_ref = &mut entries;
         vector::push_back(entries_ref, bcs::to_bytes(&version));
         vector::push_back(entries_ref, data);
