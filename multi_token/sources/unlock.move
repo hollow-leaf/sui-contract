@@ -5,14 +5,14 @@
 /// and joining. It enables TA type creators to support the aforementioned operations by
 /// unlocking Kiosk assets without fulfilling the default set
 /// of requirements (rules / policies).
-module asset_tokenization::unlock {
+module multi_token::unlock {
 
     // Sui imports
     use sui::object::{Self, ID};
     use sui::transfer_policy::{Self, TransferRequest};
 
-    use asset_tokenization::tokenized_asset::{Self, TokenizedAsset, AssetCap};
-    use asset_tokenization::proxy::{Self, ProtectedTP};
+    use multi_token::tokenized_asset::{Self, TokenizedAsset, AssetCap};
+    use multi_token::proxy::{Self, ProtectedTP};
 
     const EWrongItem: u64 = 1;
     const ENotExpectedSupply: u64 = 2;

@@ -2,18 +2,15 @@
 module suilink::registry_v2 {
 
     // ----- Use Statements -----
+    use std::string;
 
-    use sui::object;
     use sui::bag;
-    use suilink::suilink;
-    use sui::tx_context;
+    use sui::clock;
     use sui::dynamic_field;
     use sui::vec_set;
-    use sui::transfer;
+
+    use suilink::suilink;
     use suilink::utils;
-    use std::vector;
-    use std::string;
-    use sui::clock;
 
     // ----- public structs -----
 

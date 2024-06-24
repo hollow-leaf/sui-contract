@@ -3,13 +3,12 @@ module suilink::utils {
     // ----- Use Statements -----
 
     use std::string;
-    use std::vector;
     use sui::bcs;
     use sui::hash;
     // ----- Public Functions -----
 
     public fun bytes_to_hex(input: vector<u8>): string::String {
-        let mut hex_prefix = b"0123456789abcdef";
+        let hex_prefix = b"0123456789abcdef";
         let mut hex_output = b"0x";
         let mut index = 0;
         while (index < vector::length(&input)) {

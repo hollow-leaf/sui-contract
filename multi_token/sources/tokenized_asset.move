@@ -7,7 +7,7 @@
 /// This module employs similar implementations to some methods found in the Coin module.
 /// It encompasses functionalities pertinent to asset tokenization,
 /// including new asset creation, minting, splitting, joining, and burning.
-module asset_tokenization::tokenized_asset {
+module multi_token::tokenized_asset {
     // std lib imports
     use std::string::{String};
     use std::option::{Self, Option};

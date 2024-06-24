@@ -5,7 +5,7 @@
 /// Like policy, registry and display creation.
 /// This is required since the publisher of the tokenized_asset module
 /// will not be the same as the publisher of the tokenized asset type.
-module asset_tokenization::proxy {
+module multi_token::proxy {
 
     // Sui imports
     use sui::object::{Self, UID};
@@ -16,9 +16,9 @@ module asset_tokenization::proxy {
     use sui::transfer;
 
     // Asset tokenization imports
-    use asset_tokenization::tokenized_asset::{TokenizedAsset, PlatformCap};
+    use multi_token::tokenized_asset::{TokenizedAsset, PlatformCap};
 
-    /* friend asset_tokenization::unlock; */
+    /* friend multi_token::unlock; */
 
     const ETypeNotFromPackage: u64 = 1;
 
@@ -54,7 +54,7 @@ module asset_tokenization::proxy {
     /// to create a Transfer Policy for the type TokenizedAsset<T>,
     /// where T matches with the Publisher object.
     public fun setup_tp<T: drop>(
-        registry: &Registry,
+        registry: &Registry
         // input Publisher Object from Geneis pacakge
         publisher: &Publisher,
         ctx: &mut TxContext

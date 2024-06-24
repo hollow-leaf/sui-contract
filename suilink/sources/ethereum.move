@@ -2,12 +2,10 @@ module suilink::ethereum {
 
     // ----- Use Statements -----
 
-    use std::vector;
     use sui::ecdsa_k1;
     use sui::hash;
     use suilink::suilink;
     use sui::clock;
-    use sui::tx_context;
     use suilink::registry_v2;
     use std::string;
     use sui::address;
@@ -25,6 +23,7 @@ module suilink::ethereum {
         message: vector<u8>
     ): vector<u8> {
         let recovery_id = vector::borrow_mut(&mut signature, 64);
+        // The recovery identifier (“v”)
         if (*recovery_id == 27) {
             *recovery_id = 0;
         } else if (*recovery_id == 28) {
@@ -35,7 +34,6 @@ module suilink::ethereum {
         let uncompressed_pubkey = ecdsa_k1::secp256k1_ecrecover(&signature, &message, 0);
         let decompressed_pubkey = ecdsa_k1::decompress_pubkey(&uncompressed_pubkey);
         let mut data_with_prefix = b"";
-        // let data_with_prefix = prefix.to_vec();
         let mut i = 1;
         while (i < 65) {
             vector::push_back(&mut data_with_prefix, *vector::borrow(&decompressed_pubkey, i));
@@ -54,18 +52,9 @@ module suilink::ethereum {
     // ----- Public Functions -----
 
     public fun ethereum(
-        admin_cap: &suilink::AdminCap
+        _: &suilink::AdminCap
     ): Ethereum {
         Ethereum { dummy_field: false }
-    }
-
-    public fun link<T>(
-        registry: &mut suilink::SuiLinkRegistry,
-        link_data: vector<u8>,
-        clock: &clock::Clock,
-        ctx: &mut tx_context::TxContext,
-    ) {
-        abort 1
     }
 
     public fun link_v2(
@@ -80,6 +69,7 @@ module suilink::ethereum {
         string::append_utf8(&mut message_prefix, b". No blockchain transaction or gas cost required.");
         registry_v2::mint<Ethereum>(
             registry,
+            //retrieve eth address
             utils::bytes_to_hex(
                 ecrecover_eth_address(signature, *string::bytes(&message_prefix))
             ),
@@ -87,5 +77,21 @@ module suilink::ethereum {
             0,
             ctx
         );
+    }
+
+    #[test]
+    public fun test_eth_sig(){
+        let address = x"30A674400ECa0776fA42bF3160A77FCCcD20abF5";
+        let msg = string::utf8(b"acumferi21");
+        let signature = x"2f22b3e9ec1c67d8c18e9677e34d3c3dcaf765b12a0ed3c1f6b2d837133db02d2852939a0e0f7d3c95e892d316814865720d309d1618432250b34b5833d729721c";
+
+
+        let decompressed_bytes = ecrecover_eth_address(signature, *string::bytes(&msg));
+        let decompressed_address = utils::bytes_to_hex(decompressed_bytes);
+
+std::debug::print(&decompressed_bytes);
+std::debug::print(&decompressed_address);
+
+        assert!(address == decompressed_bytes, 404);
     }
 }

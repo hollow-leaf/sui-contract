@@ -2,12 +2,9 @@ module suilink::suilink {
 
     // ----- Use Statements -----
 
-    use sui::object;
     use std::string;
     use sui::vec_set;
-    use sui::tx_context;
     use sui::package;
-    use sui::transfer;
 
     // ----- public structs -----
 
@@ -18,7 +15,8 @@ module suilink::suilink {
     public struct SUILINK has drop {
         dummy_field: bool,
     }
-
+    
+    #[allow(unused_field)]
     public struct SuiLink<phantom T0> has key {
         id: object::UID,
         network_address: string::String,
@@ -48,9 +46,9 @@ module suilink::suilink {
     // ----- Public Functions -----
 
     public fun delete<T>(
-        registry: &mut SuiLinkRegistry,
-        link: SuiLink<T>,
-        ctx: &mut tx_context::TxContext,
+        _registry: &mut SuiLinkRegistry,
+        _link: SuiLink<T>,
+        _ctx: &mut tx_context::TxContext,
     ) {
         abort 0
     }
