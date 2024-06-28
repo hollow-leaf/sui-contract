@@ -1,8 +1,9 @@
 [package]
 name = "multi_token"
 edition = "2024.beta"
-version = "1"
-published-at="0xa8fe0d9f91e4f63df6bd4816278fb02589a763ec9410ecdde0d1128538825a1d"
+version = "2"
+# published-at="0xa8fe0d9f91e4f63df6bd4816278fb02589a763ec9410ecdde0d1128538825a1d"
+published-at = "0x5646cfb5afa295d10a670354355b3e77602d3461aec099fbe92817983b665e2a"
 # license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
 

@@ -132,6 +132,13 @@ module multi_token::tokenized_asset {
         (asset_cap, asset_metadata)
     }
 
+    public entry fun increase_supply<T>(
+        cap: &mut AssetCap<T>,
+        value: u64
+    ){
+        cap.total_supply = cap.total_supply + value;
+    }
+
     /// Mints a TA with the specified fields.
     /// If the VecMap of an asset is populated with values, indicating multiple unique entries,
     /// it is considered a non-fungible token (NFT). 

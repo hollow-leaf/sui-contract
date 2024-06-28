@@ -1,8 +1,5 @@
 module member::member {
-    use sui::package;
-    use sui::display;
-    use std::string::{String, utf8};
-    use sui::object_bag::{Self, ObjectBag};
+    use sui::object_bag::{Self as ob, ObjectBag};
     use sui::table::{Self, Table};
 
     public struct AdminCap has key, store{
@@ -11,21 +8,26 @@ module member::member {
 
     public struct MemberReg has key{
         id: UID,
-        registry: Table<address, ID>
+        registry: Table<address, ID>,
+        /// MemberOwnerCap --> ownedAssets
+        member_assets: Table<ID, ObjectBag>
     }
 
-    public struct MEMBER has drop {}
-    
     // Intransferable
-    public struct Member has key{
-        id: UID,
-        name: String,
-        eth_link: String,
-        sol_link: String,
-        assets: ObjectBag
+    /// Key to access owner's objectBags in MemberReg
+    public struct MemberOwnerCap has key{
+        id: UID
     }
 
-    fun init(otw: MEMBER, ctx: &mut TxContext){
+    public fun member_asset(reg: &mut MemberReg, member_cap_id: ID):&ObjectBag{
+        table::borrow(&reg.member_assets, member_cap_id)
+    }
+
+    fun member_asset_mut(reg: &mut MemberReg, member_cap_id: ID):&mut ObjectBag{
+        table::borrow_mut(&mut reg.member_assets, member_cap_id)
+    }
+
+    fun init(ctx: &mut TxContext){
         // AdminCap
         let cap = AdminCap{
             id: object::new(ctx)
@@ -35,62 +37,39 @@ module member::member {
         // MemberReg
         let reg = MemberReg{
             id: object::new(ctx),
-            registry: table::new(ctx)
+            registry: table::new(ctx),
+            member_assets: table::new(ctx)
         };
         transfer::share_object(reg);
-
-        // display
-        let publisher = package::claim(otw, ctx);
-        let keys = vector[
-            utf8(b"name"),
-            utf8(b"eth_link"),
-            utf8(b"sol_link"),
-        ];
-        let values = vector[
-            utf8(b"{name}"),
-            utf8(b"{eth_link}"),
-            utf8(b"{sol_link}"),
-        ];
-        let mut display = display::new_with_fields<Member>(&publisher, keys, values, ctx);
-        display::update_version(&mut display);
-        transfer::public_transfer(publisher, tx_context::sender(ctx));
-        transfer::public_transfer(display, tx_context::sender(ctx));
     }
 
     // mint to recipient
-    public fun register(
+    public fun new(
         _: &AdminCap,
+        reg: &mut MemberReg,
         recipient: address,
         ctx: &mut TxContext
     ){
-        let member = Member{
-            id: object::new(ctx),
-            assets: object_bag::new(ctx),
-            name: utf8(b""),
-            eth_link: utf8(b""),
-            sol_link: utf8(b"")
+        let owner_cap = MemberOwnerCap{
+            id: object::new(ctx)
         };
-        transfer::transfer(member, recipient);
+        
+        // abort if already registered
+        reg.registry.add(recipient, object::id(&owner_cap));
+        transfer::transfer(owner_cap, recipient);
     }
 
-    entry fun edit_name(
-        self: &mut Member,
-        name: vector<u8>
+    // receive objectsa
+    public fun admin_deposit<T: key + store>(
+        _: &AdminCap,
+        recipient: address,
+        reg: &mut MemberReg,
+        obj: T
     ){
-        self.name = utf8(name);
-    }
-
-    entry fun edit_sol_link(
-        self: &mut Member,
-        name: vector<u8>
-    ){
-        self.name = utf8(name);
-    }
-
-    entry fun edit_eth_link(
-        self: &mut Member,
-        name: vector<u8>
-    ){
-        self.name = utf8(name);
+        let user_cap_id = table::borrow(&reg.registry, recipient);
+        let member_asset_mut = member_asset_mut(reg, *user_cap_id);
+        
+        let obj_id = object::id(&obj);
+        ob::add(member_asset_mut, obj_id, obj);
     }
 }

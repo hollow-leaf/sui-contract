@@ -54,7 +54,7 @@ module multi_token::proxy {
     /// to create a Transfer Policy for the type TokenizedAsset<T>,
     /// where T matches with the Publisher object.
     public fun setup_tp<T: drop>(
-        registry: &Registry
+        registry: &Registry,
         // input Publisher Object from Geneis pacakge
         publisher: &Publisher,
         ctx: &mut TxContext
