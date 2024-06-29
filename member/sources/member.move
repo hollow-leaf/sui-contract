@@ -19,6 +19,11 @@ module member::member {
         id: UID
     }
 
+    public fun member_asset_by_address(reg: &mut MemberReg, member: address):&ObjectBag{
+        let user_cap_id = table::borrow(&reg.registry, member);
+        member_asset(reg, *user_cap_id)
+    }
+
     public fun member_asset(reg: &mut MemberReg, member_cap_id: ID):&ObjectBag{
         table::borrow(&reg.member_assets, member_cap_id)
     }
@@ -43,6 +48,7 @@ module member::member {
     }
 
     // mint to recipient
+    // Depreciated
     public fun add_member(
         reg: &mut MemberReg,
         _: &AdminCap,
@@ -59,6 +65,24 @@ module member::member {
         reg.member_assets.add(owner_cap_id, ob::new(ctx));
 
         owner_cap
+    }
+
+    public fun add_member_and_transfer(
+        reg: &mut MemberReg,
+        _: &AdminCap,
+        member: address,
+        ctx: &mut TxContext
+    ){
+        let owner_cap = MemberOwnerCap{
+            id: object::new(ctx)
+        };
+        let owner_cap_id = object::id(&owner_cap);
+        
+        // abort if already registered
+        reg.registry.add(member, owner_cap_id);
+        reg.member_assets.add(owner_cap_id, ob::new(ctx));
+
+        transfer::transfer(owner_cap, member);
     }
 
     public fun remove_member(
